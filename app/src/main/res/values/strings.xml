@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">TheMovieDB</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="popular_movies">Popular Movies</string>
+    <string name="top_rated_movies">Top Rated Movies</string>
+    <string name="up_coming_movies">Up Coming Movies</string>
+    <string name="now_playing_movies">Now Playing Movies</string>
 </resources>

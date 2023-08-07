@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -47,13 +48,25 @@ android {
             dimension = "env"
             applicationId = "com.mehmetpetek.themoviedb"
             resValue("string", "app_name", "The Movie DB")
-            buildConfigField("String", "BASE_URL", "\"https://api.coingecko.com/api/v3/coins/\"")
+            buildConfigField("String", "BASE_URL", "\"https://api.themoviedb.org/3/\"")
+            buildConfigField(
+                "String",
+                "API_TOKEN",
+                "\"eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkMzAwOTM0MDhlNDE0ZGI5ODJmNTJlMDU0ZjY2N2Q5NyIsInN1YiI6IjYwMzk1MmZiNmQ5N2U2MDA0NTE5ZTYwOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.d5C-08afDBaOLvQeVAnVu0YgtHvaC-S232PgAlrcxKE\""
+            )
+            buildConfigField("String", "IMAGE_BASE_URL", "\"https://image.tmdb.org/t/p/w500\"")
         }
         create("dev") {
             dimension = "env"
             applicationId = "com.mehmetpetek.themoviedb.beta"
             resValue("string", "app_name", "The Movie DB - BETA")
-            buildConfigField("String", "BASE_URL", "\"https://api.coingecko.com/api/v3/coins/\"")
+            buildConfigField("String", "BASE_URL", "\"https://api.themoviedb.org/3/\"")
+            buildConfigField(
+                "String",
+                "API_TOKEN",
+                "\"eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkMzAwOTM0MDhlNDE0ZGI5ODJmNTJlMDU0ZjY2N2Q5NyIsInN1YiI6IjYwMzk1MmZiNmQ5N2U2MDA0NTE5ZTYwOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.d5C-08afDBaOLvQeVAnVu0YgtHvaC-S232PgAlrcxKE\""
+            )
+            buildConfigField("String", "IMAGE_BASE_URL", "\"https://image.tmdb.org/t/p/w500\"")
         }
     }
     flavorDimensions += listOf("platform", "env")
@@ -90,6 +103,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.navigation)
     implementation(libs.navigation.fragment)
+    implementation(libs.coil)
 
     //Async Operations
     implementation(libs.coroutines)
@@ -97,6 +111,14 @@ dependencies {
     //DI
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
+
+    //HTTP Request
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+
+    //HTTP Request Realtime Viewer
+    debugImplementation(libs.chucker)
+    releaseImplementation(libs.chucker.no.op)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
