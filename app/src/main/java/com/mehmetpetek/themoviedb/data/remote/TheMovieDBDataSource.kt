@@ -8,4 +8,5 @@ class TheMovieDBDataSource @Inject constructor(private val theMovieDBService: Th
     suspend fun getTopRatedMovies(page: Int) = theMovieDBService.getTopRatedMovies(page)
     suspend fun getUpcomingMovies(page: Int) = theMovieDBService.getUpcomingMovies(page)
     suspend fun getNowPlayingMovies(page: Int) = theMovieDBService.getNowPlayingMovies(page)
+    suspend fun getMovieDetail(movieId: Int) = theMovieDBService.getMovieDetail(movieId)
 }

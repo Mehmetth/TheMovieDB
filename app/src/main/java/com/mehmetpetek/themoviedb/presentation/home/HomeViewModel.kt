@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.viewModelScope
 import com.mehmetpetek.themoviedb.R
 import com.mehmetpetek.themoviedb.data.remote.model.MovieResponse
+import com.mehmetpetek.themoviedb.data.remote.model.Result
 import com.mehmetpetek.themoviedb.domain.usecase.NowPlayingMoviesUseCase
 import com.mehmetpetek.themoviedb.domain.usecase.PopularMoviesUseCase
 import com.mehmetpetek.themoviedb.domain.usecase.TopRatedMoviesUseCase
@@ -38,7 +39,6 @@ class HomeViewModel @Inject constructor(
     override fun handleEvents(event: HomeEvent) {
         when (event) {
             is HomeEvent.LoadMore -> {
-
                 when (event.title) {
                     application.applicationContext.getString(R.string.popular_movies) -> {
                         getPopularMovies(getCurrentState().popularMoviesPage + 1)
@@ -56,6 +56,10 @@ class HomeViewModel @Inject constructor(
                         getNowPlayingMovies(getCurrentState().nowPlayingMoviesPage + 1)
                     }
                 }
+            }
+
+            is HomeEvent.OnClickMovieDetail -> {
+                setEffect { HomeEffect.GoToMovieDetail(event.movieId) }
             }
         }
     }
@@ -165,8 +169,10 @@ data class HomeState(
 
 sealed interface HomeEffect : IEffect {
     data class ShowError(val message: String) : HomeEffect
+    data class GoToMovieDetail(val movieId: Int) : HomeEffect
 }
 
 sealed interface HomeEvent : IEvent {
     data class LoadMore(val title: String) : HomeEvent
+    data class OnClickMovieDetail(val movieId: Int) : HomeEvent
 }

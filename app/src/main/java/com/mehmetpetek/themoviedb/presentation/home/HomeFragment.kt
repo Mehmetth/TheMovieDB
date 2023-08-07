@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mehmetpetek.themoviedb.R
@@ -34,6 +35,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     when (it) {
                         is HomeEffect.ShowError -> {
                         }
+                        is HomeEffect.GoToMovieDetail -> {
+                            findNavController().navigate(HomeFragmentDirections.homeToDetail(it.movieId))
+                        }
                     }
                 }
             }
@@ -45,6 +49,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.state.collect {
                     if (!it.isLoading) {
+                        Log.d("CCCCCCCCCCCCCC","popularMovies : " + it.popularMovies?.results?.size)
+                        Log.d("CCCCCCCCCCCCCC","topRatedMovies : " + it.topRatedMovies?.results?.size)
+                        Log.d("CCCCCCCCCCCCCC","upcomingMovies : " + it.upcomingMovies?.results?.size)
+                        Log.d("CCCCCCCCCCCCCC","nowPlayingMovies : " + it.nowPlayingMovies?.results?.size)
+                        Log.d("CCCCCCCCCCCCCC","+++++++++++++++++++++++++++++")
+
                         it.popularMovies?.let { popularMovies ->
                             setRecyclerview(
                                 binding.tvPopularMoviesTitle,
@@ -113,7 +123,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
     }
 
-    override fun onClickMovie(result: Result) {
-        Log.d("DDDDDDDDDDDDDDDDD", "onClickMovie : " + result)
+    override fun onClickMovie(movieId: Int) {
+        viewModel.setEvent(HomeEvent.OnClickMovieDetail(movieId))
     }
 }

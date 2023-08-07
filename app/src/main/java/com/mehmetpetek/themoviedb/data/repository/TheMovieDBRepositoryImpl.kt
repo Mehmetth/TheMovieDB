@@ -1,6 +1,7 @@
 package com.mehmetpetek.themoviedb.data.repository
 
 import com.mehmetpetek.themoviedb.data.remote.TheMovieDBDataSource
+import com.mehmetpetek.themoviedb.data.remote.model.MovieDetailResponse
 import com.mehmetpetek.themoviedb.data.remote.model.MovieResponse
 import com.mehmetpetek.themoviedb.data.remote.model.Resource
 import com.mehmetpetek.themoviedb.domain.repository.TheMovieDBRepository
@@ -12,64 +13,74 @@ import javax.inject.Inject
 
 class TheMovieDBRepositoryImpl @Inject constructor(private val theMovieDBDataSource: TheMovieDBDataSource) :
     TheMovieDBRepository {
-    override fun getPopularMovies(page: Int): Flow<Resource<MovieResponse>> =
-        callbackFlow {
-            val response = theMovieDBDataSource.getPopularMovies(page)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    trySend(Resource.Success(it))
-                } ?: kotlin.run {
-                    trySend(Resource.Fail(null))
-                }
-            } else {
-                trySend(Resource.Error(null))
+    override fun getPopularMovies(page: Int): Flow<Resource<MovieResponse>> = callbackFlow {
+        val response = theMovieDBDataSource.getPopularMovies(page)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                trySend(Resource.Success(it))
+            } ?: kotlin.run {
+                trySend(Resource.Fail(null))
             }
-            awaitClose { cancel() }
+        } else {
+            trySend(Resource.Error(null))
         }
+        awaitClose { cancel() }
+    }
 
-    override fun getTopRatedMovies(page: Int): Flow<Resource<MovieResponse>> =
-        callbackFlow {
-            val response = theMovieDBDataSource.getTopRatedMovies(page)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    trySend(Resource.Success(it))
-                } ?: kotlin.run {
-                    trySend(Resource.Fail(null))
-                }
-            } else {
-                trySend(Resource.Error(null))
+    override fun getTopRatedMovies(page: Int): Flow<Resource<MovieResponse>> = callbackFlow {
+        val response = theMovieDBDataSource.getTopRatedMovies(page)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                trySend(Resource.Success(it))
+            } ?: kotlin.run {
+                trySend(Resource.Fail(null))
             }
-            awaitClose { cancel() }
+        } else {
+            trySend(Resource.Error(null))
         }
+        awaitClose { cancel() }
+    }
 
-    override fun getUpcomingMovies(page: Int): Flow<Resource<MovieResponse>> =
-        callbackFlow {
-            val response = theMovieDBDataSource.getUpcomingMovies(page)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    trySend(Resource.Success(it))
-                } ?: kotlin.run {
-                    trySend(Resource.Fail(null))
-                }
-            } else {
-                trySend(Resource.Error(null))
+    override fun getUpcomingMovies(page: Int): Flow<Resource<MovieResponse>> = callbackFlow {
+        val response = theMovieDBDataSource.getUpcomingMovies(page)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                trySend(Resource.Success(it))
+            } ?: kotlin.run {
+                trySend(Resource.Fail(null))
             }
-            awaitClose { cancel() }
+        } else {
+            trySend(Resource.Error(null))
         }
+        awaitClose { cancel() }
+    }
 
-    override fun getNowPlayingMovies(page: Int): Flow<Resource<MovieResponse>> =
-        callbackFlow {
-            val response = theMovieDBDataSource.getNowPlayingMovies(page)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    trySend(Resource.Success(it))
-                } ?: kotlin.run {
-                    trySend(Resource.Fail(null))
-                }
-            } else {
-                trySend(Resource.Error(null))
+    override fun getNowPlayingMovies(page: Int): Flow<Resource<MovieResponse>> = callbackFlow {
+        val response = theMovieDBDataSource.getNowPlayingMovies(page)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                trySend(Resource.Success(it))
+            } ?: kotlin.run {
+                trySend(Resource.Fail(null))
             }
-            awaitClose { cancel() }
+        } else {
+            trySend(Resource.Error(null))
         }
+        awaitClose { cancel() }
+    }
+
+    override fun getMovieDetail(movieId: Int): Flow<Resource<MovieDetailResponse>> = callbackFlow {
+        val response = theMovieDBDataSource.getMovieDetail(movieId)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                trySend(Resource.Success(it))
+            } ?: kotlin.run {
+                trySend(Resource.Fail(null))
+            }
+        } else {
+            trySend(Resource.Error(null))
+        }
+        awaitClose { cancel() }
+    }
 
 }
