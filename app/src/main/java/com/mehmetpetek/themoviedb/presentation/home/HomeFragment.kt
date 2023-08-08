@@ -54,32 +54,32 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                             when (key) {
                                 AllMoviesUseCase.MovieType.POPULARITY_DESC -> {
                                     setRecyclerview(
-                                        binding.tvPopularMoviesTitle,
-                                        binding.rvPopularMovies,
+                                        binding.tvPopularityMoviesTitle,
+                                        binding.rvPopularityMovies,
                                         MovieAdapterModel(getString(key.movieType), value)
                                     )
                                 }
 
                                 AllMoviesUseCase.MovieType.REVENUE_DESC -> {
                                     setRecyclerview(
-                                        binding.tvTopRatedMoviesTitle,
-                                        binding.rvTopRatedMovies,
+                                        binding.tvRevenueMoviesTitle,
+                                        binding.rvRevenueMovies,
                                         MovieAdapterModel(getString(key.movieType), value)
                                     )
                                 }
 
                                 AllMoviesUseCase.MovieType.PRIMARY_RELEASE_DATE_DESC -> {
                                     setRecyclerview(
-                                        binding.tvUpComingMoviesTitle,
-                                        binding.rvUpComingMovies,
+                                        binding.tvPrimaryReleaseDateMoviesTitle,
+                                        binding.rvPrimaryReleaseDateMovies,
                                         MovieAdapterModel(getString(key.movieType), value)
                                     )
                                 }
 
                                 AllMoviesUseCase.MovieType.VOTE_AVERAGE_DESC -> {
                                     setRecyclerview(
-                                        binding.tvNowPlayingMoviesTitle,
-                                        binding.rvNowPlayingMovies,
+                                        binding.tvVoteAverageTitle,
+                                        binding.rvVoteAverageMovies,
                                         MovieAdapterModel(getString(key.movieType), value)
                                     )
                                 }

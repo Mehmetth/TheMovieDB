@@ -14,28 +14,28 @@ class AllMoviesUseCase @Inject constructor(
     private val theMovieDBRepository: TheMovieDBRepository
 ) {
     operator fun invoke(
-        popularMoviesPage: Int,
-        topRatedMoviesPage: Int,
-        upcomingMoviesPage: Int,
-        nowPlayingMoviesPage: Int
+        popularityMoviesPage: Int,
+        revenueMoviesPage: Int,
+        primaryReleaseDateMoviesPage: Int,
+        voteAverageMoviesPage: Int
     ): Flow<AllMoviesState> = callbackFlow {
 
         val hashMap: HashMap<MovieType, MovieResponse?> = hashMapOf()
 
         val getPopularityMovies = theMovieDBRepository.getDiscoverMovies(
-            popularMoviesPage,
+            popularityMoviesPage,
             MovieType.POPULARITY_DESC.movieFilterDesc
         )
         val getRevenueMovies = theMovieDBRepository.getDiscoverMovies(
-            topRatedMoviesPage,
+            revenueMoviesPage,
             MovieType.REVENUE_DESC.movieFilterDesc
         )
         val getPrimaryReleaseDateMovies = theMovieDBRepository.getDiscoverMovies(
-            upcomingMoviesPage,
+            primaryReleaseDateMoviesPage,
             MovieType.PRIMARY_RELEASE_DATE_DESC.movieFilterDesc
         )
         val getVoteAverageMovies = theMovieDBRepository.getDiscoverMovies(
-            nowPlayingMoviesPage,
+            voteAverageMoviesPage,
             MovieType.VOTE_AVERAGE_DESC.movieFilterDesc
         )
 

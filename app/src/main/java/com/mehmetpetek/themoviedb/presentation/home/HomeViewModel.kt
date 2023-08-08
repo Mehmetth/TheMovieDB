@@ -21,10 +21,10 @@ class HomeViewModel @Inject constructor(
 
     init {
         allMovies(
-            getCurrentState().popularMoviesPage,
-            getCurrentState().topRatedMoviesPage,
-            getCurrentState().upcomingMoviesPage,
-            getCurrentState().nowPlayingMoviesPage
+            getCurrentState().popularityMoviesPage,
+            getCurrentState().revenueMoviesPage,
+            getCurrentState().primaryReleaseDateMoviesPage,
+            getCurrentState().voteAverageMoviesPage
         )
     }
 
@@ -35,26 +35,26 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.LoadMore -> {
                 when (event.title) {
                     application.applicationContext.getString(R.string.popularity_movies) -> {
-                        setState { copy(popularMoviesPage = getCurrentState().popularMoviesPage + 1) }
+                        setState { copy(popularityMoviesPage = getCurrentState().popularityMoviesPage + 1) }
                     }
 
                     application.applicationContext.getString(R.string.revenue_movies) -> {
-                        setState { copy(topRatedMoviesPage = getCurrentState().topRatedMoviesPage + 1) }
+                        setState { copy(revenueMoviesPage = getCurrentState().revenueMoviesPage + 1) }
                     }
 
                     application.applicationContext.getString(R.string.primary_release_date_movies) -> {
-                        setState { copy(upcomingMoviesPage = getCurrentState().upcomingMoviesPage + 1) }
+                        setState { copy(primaryReleaseDateMoviesPage = getCurrentState().primaryReleaseDateMoviesPage + 1) }
                     }
 
                     application.applicationContext.getString(R.string.vote_average_movies) -> {
-                        setState { copy(nowPlayingMoviesPage = getCurrentState().nowPlayingMoviesPage + 1) }
+                        setState { copy(voteAverageMoviesPage = getCurrentState().voteAverageMoviesPage + 1) }
                     }
                 }
                 allMovies(
-                    getCurrentState().popularMoviesPage,
-                    getCurrentState().topRatedMoviesPage,
-                    getCurrentState().upcomingMoviesPage,
-                    getCurrentState().nowPlayingMoviesPage
+                    getCurrentState().popularityMoviesPage,
+                    getCurrentState().revenueMoviesPage,
+                    getCurrentState().primaryReleaseDateMoviesPage,
+                    getCurrentState().voteAverageMoviesPage
                 )
             }
 
@@ -65,17 +65,17 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun allMovies(
-        popularMoviesPage: Int,
-        topRatedMoviesPage: Int,
-        upcomingMoviesPage: Int,
-        nowPlayingMoviesPage: Int
+        popularityMoviesPage: Int,
+        revenueMoviesPage: Int,
+        primaryReleaseDateMoviesPage: Int,
+        voteAverageMoviesPage: Int
     ) {
         viewModelScope.launch {
             allMoviesUseCase.invoke(
-                popularMoviesPage,
-                topRatedMoviesPage,
-                upcomingMoviesPage,
-                nowPlayingMoviesPage
+                popularityMoviesPage,
+                revenueMoviesPage,
+                primaryReleaseDateMoviesPage,
+                voteAverageMoviesPage
             ).collect {
                 when (it) {
                     is AllMoviesUseCase.AllMoviesState.Success -> {
@@ -96,10 +96,10 @@ class HomeViewModel @Inject constructor(
 
 data class HomeState(
     val isLoading: Boolean = false,
-    val popularMoviesPage: Int = 1,
-    val topRatedMoviesPage: Int = 1,
-    val upcomingMoviesPage: Int = 1,
-    val nowPlayingMoviesPage: Int = 1,
+    val popularityMoviesPage: Int = 1,
+    val revenueMoviesPage: Int = 1,
+    val primaryReleaseDateMoviesPage: Int = 1,
+    val voteAverageMoviesPage: Int = 1,
     val allMovies: HashMap<AllMoviesUseCase.MovieType, MovieResponse?> = hashMapOf(),
 ) : IState
 
