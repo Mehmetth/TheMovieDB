@@ -34,19 +34,19 @@ class HomeViewModel @Inject constructor(
         when (event) {
             is HomeEvent.LoadMore -> {
                 when (event.title) {
-                    application.applicationContext.getString(R.string.popular_movies) -> {
+                    application.applicationContext.getString(R.string.popularity_movies) -> {
                         setState { copy(popularMoviesPage = getCurrentState().popularMoviesPage + 1) }
                     }
 
-                    application.applicationContext.getString(R.string.top_rated_movies) -> {
+                    application.applicationContext.getString(R.string.revenue_movies) -> {
                         setState { copy(topRatedMoviesPage = getCurrentState().topRatedMoviesPage + 1) }
                     }
 
-                    application.applicationContext.getString(R.string.up_coming_movies) -> {
+                    application.applicationContext.getString(R.string.primary_release_date_movies) -> {
                         setState { copy(upcomingMoviesPage = getCurrentState().upcomingMoviesPage + 1) }
                     }
 
-                    application.applicationContext.getString(R.string.now_playing_movies) -> {
+                    application.applicationContext.getString(R.string.vote_average_movies) -> {
                         setState { copy(nowPlayingMoviesPage = getCurrentState().nowPlayingMoviesPage + 1) }
                     }
                 }

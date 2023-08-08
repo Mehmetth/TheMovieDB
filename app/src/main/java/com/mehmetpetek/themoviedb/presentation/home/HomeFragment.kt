@@ -52,7 +52,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     if (!it.isLoading) {
                         it.allMovies.forEach { (key, value) ->
                             when (key) {
-                                AllMoviesUseCase.MovieType.POPULAR -> {
+                                AllMoviesUseCase.MovieType.POPULARITY_DESC -> {
                                     setRecyclerview(
                                         binding.tvPopularMoviesTitle,
                                         binding.rvPopularMovies,
@@ -60,7 +60,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                                     )
                                 }
 
-                                AllMoviesUseCase.MovieType.TOP_RATED -> {
+                                AllMoviesUseCase.MovieType.REVENUE_DESC -> {
                                     setRecyclerview(
                                         binding.tvTopRatedMoviesTitle,
                                         binding.rvTopRatedMovies,
@@ -68,7 +68,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                                     )
                                 }
 
-                                AllMoviesUseCase.MovieType.UP_COMING -> {
+                                AllMoviesUseCase.MovieType.PRIMARY_RELEASE_DATE_DESC -> {
                                     setRecyclerview(
                                         binding.tvUpComingMoviesTitle,
                                         binding.rvUpComingMovies,
@@ -76,7 +76,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                                     )
                                 }
 
-                                AllMoviesUseCase.MovieType.NOW_PLAYING -> {
+                                AllMoviesUseCase.MovieType.VOTE_AVERAGE_DESC -> {
                                     setRecyclerview(
                                         binding.tvNowPlayingMoviesTitle,
                                         binding.rvNowPlayingMovies,

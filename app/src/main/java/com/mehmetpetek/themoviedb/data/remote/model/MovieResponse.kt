@@ -5,17 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MovieResponse(
-    val dates: Dates,
     val page: Int,
-    var results: List<Result>,
+    val results: List<Result>,
     val total_pages: Int,
     val total_results: Int
-) : Parcelable
-
-@Parcelize
-data class Dates(
-    val maximum: String,
-    val minimum: String
 ) : Parcelable
 
 @Parcelize

@@ -20,62 +20,74 @@ class AllMoviesUseCase @Inject constructor(
         nowPlayingMoviesPage: Int
     ): Flow<AllMoviesState> = callbackFlow {
 
-        val hasmap: HashMap<MovieType, MovieResponse?> = hashMapOf()
+        val hashMap: HashMap<MovieType, MovieResponse?> = hashMapOf()
 
-        val getPopularMovies = theMovieDBRepository.getPopularMovies(popularMoviesPage)
-        val getTopRatedMovies = theMovieDBRepository.getTopRatedMovies(topRatedMoviesPage)
-        val getUpcomingMovies = theMovieDBRepository.getUpcomingMovies(upcomingMoviesPage)
-        val getNowPlayingMovies = theMovieDBRepository.getNowPlayingMovies(nowPlayingMoviesPage)
+        val getPopularityMovies = theMovieDBRepository.getDiscoverMovies(
+            popularMoviesPage,
+            MovieType.POPULARITY_DESC.movieFilterDesc
+        )
+        val getRevenueMovies = theMovieDBRepository.getDiscoverMovies(
+            topRatedMoviesPage,
+            MovieType.REVENUE_DESC.movieFilterDesc
+        )
+        val getPrimaryReleaseDateMovies = theMovieDBRepository.getDiscoverMovies(
+            upcomingMoviesPage,
+            MovieType.PRIMARY_RELEASE_DATE_DESC.movieFilterDesc
+        )
+        val getVoteAverageMovies = theMovieDBRepository.getDiscoverMovies(
+            nowPlayingMoviesPage,
+            MovieType.VOTE_AVERAGE_DESC.movieFilterDesc
+        )
 
         combine(
-            getPopularMovies,
-            getTopRatedMovies,
-            getUpcomingMovies,
-            getNowPlayingMovies
-        ) { popularMovies, topRatedMovies, upcomingMovies, nowPlayingMovies ->
+            getPopularityMovies,
+            getRevenueMovies,
+            getPrimaryReleaseDateMovies,
+            getVoteAverageMovies
+        ) { popularityMovies, revenueMovies, primaryReleaseDateMovies, voteAverageMovies ->
 
-            popularMovies.data?.let {
+            popularityMovies.data?.let {
                 if (it.results.isNotEmpty()) {
-                    hasmap[MovieType.POPULAR] = popularMovies.data
+                    hashMap[MovieType.POPULARITY_DESC] = popularityMovies.data
                 } else {
                     AllMoviesState.NotData
                 }
             } ?: kotlin.run {
-                AllMoviesState.Error(popularMovies.message)
+                AllMoviesState.Error(popularityMovies.message)
             }
 
-            topRatedMovies.data?.let {
+            revenueMovies.data?.let {
                 if (it.results.isNotEmpty()) {
-                    hasmap[MovieType.TOP_RATED] = topRatedMovies.data
+                    hashMap[MovieType.REVENUE_DESC] = revenueMovies.data
                 } else {
                     AllMoviesState.NotData
                 }
             } ?: kotlin.run {
-                AllMoviesState.Error(topRatedMovies.message)
+                AllMoviesState.Error(revenueMovies.message)
             }
 
-            upcomingMovies.data?.let {
+            primaryReleaseDateMovies.data?.let {
                 if (it.results.isNotEmpty()) {
-                    hasmap[MovieType.UP_COMING] = upcomingMovies.data
+                    hashMap[MovieType.PRIMARY_RELEASE_DATE_DESC] = primaryReleaseDateMovies.data
                 } else {
                     AllMoviesState.NotData
                 }
             } ?: kotlin.run {
-                AllMoviesState.Error(upcomingMovies.message)
+                AllMoviesState.Error(primaryReleaseDateMovies.message)
             }
 
-            nowPlayingMovies.data?.let {
+            voteAverageMovies.data?.let {
                 if (it.results.isNotEmpty()) {
-                    hasmap[MovieType.NOW_PLAYING] = nowPlayingMovies.data
+                    hashMap[MovieType.VOTE_AVERAGE_DESC] = voteAverageMovies.data
                 } else {
                     AllMoviesState.NotData
                 }
             } ?: kotlin.run {
-                AllMoviesState.Error(nowPlayingMovies.message)
+                AllMoviesState.Error(voteAverageMovies.message)
             }
 
-            if (hasmap.values.isNotEmpty()) {
-                AllMoviesState.Success(hasmap)
+            if (hashMap.values.isNotEmpty()) {
+                AllMoviesState.Success(hashMap)
             } else {
                 AllMoviesState.Error(Throwable())
             }
@@ -92,10 +104,14 @@ class AllMoviesUseCase @Inject constructor(
         object NotData : AllMoviesState
     }
 
-    enum class MovieType(val movieType: Int) {
-        POPULAR(R.string.popular_movies),
-        TOP_RATED(R.string.top_rated_movies),
-        UP_COMING(R.string.up_coming_movies),
-        NOW_PLAYING(R.string.now_playing_movies)
+
+    enum class MovieType(val movieType: Int, val movieFilterDesc: String) {
+        POPULARITY_DESC(R.string.popularity_movies, "popularity.desc"),
+        REVENUE_DESC(R.string.revenue_movies, "revenue.desc"),
+        PRIMARY_RELEASE_DATE_DESC(
+            R.string.primary_release_date_movies,
+            "primary_release_date.desc"
+        ),
+        VOTE_AVERAGE_DESC(R.string.vote_average_movies, "vote_average.desc")
     }
 }
