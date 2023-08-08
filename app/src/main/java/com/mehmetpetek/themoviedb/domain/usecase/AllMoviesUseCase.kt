@@ -2,7 +2,6 @@ package com.mehmetpetek.themoviedb.domain.usecase
 
 import com.mehmetpetek.themoviedb.R
 import com.mehmetpetek.themoviedb.data.remote.model.MovieResponse
-import com.mehmetpetek.themoviedb.data.remote.model.Resource
 import com.mehmetpetek.themoviedb.domain.repository.TheMovieDBRepository
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
@@ -36,10 +35,9 @@ class AllMoviesUseCase @Inject constructor(
         ) { popularMovies, topRatedMovies, upcomingMovies, nowPlayingMovies ->
 
             popularMovies.data?.let {
-                if (it.results.isNotEmpty()){
+                if (it.results.isNotEmpty()) {
                     hasmap[MovieType.POPULAR] = popularMovies.data
-                }
-                else{
+                } else {
                     AllMoviesState.NotData
                 }
             } ?: kotlin.run {
@@ -47,10 +45,9 @@ class AllMoviesUseCase @Inject constructor(
             }
 
             topRatedMovies.data?.let {
-                if (it.results.isNotEmpty()){
+                if (it.results.isNotEmpty()) {
                     hasmap[MovieType.TOP_RATED] = topRatedMovies.data
-                }
-                else{
+                } else {
                     AllMoviesState.NotData
                 }
             } ?: kotlin.run {
@@ -58,10 +55,9 @@ class AllMoviesUseCase @Inject constructor(
             }
 
             upcomingMovies.data?.let {
-                if (it.results.isNotEmpty()){
+                if (it.results.isNotEmpty()) {
                     hasmap[MovieType.UP_COMING] = upcomingMovies.data
-                }
-                else{
+                } else {
                     AllMoviesState.NotData
                 }
             } ?: kotlin.run {
@@ -69,10 +65,9 @@ class AllMoviesUseCase @Inject constructor(
             }
 
             nowPlayingMovies.data?.let {
-                if (it.results.isNotEmpty()){
+                if (it.results.isNotEmpty()) {
                     hasmap[MovieType.NOW_PLAYING] = nowPlayingMovies.data
-                }
-                else{
+                } else {
                     AllMoviesState.NotData
                 }
             } ?: kotlin.run {
@@ -97,7 +92,7 @@ class AllMoviesUseCase @Inject constructor(
         object NotData : AllMoviesState
     }
 
-    enum class MovieType(val movieType: Int){
+    enum class MovieType(val movieType: Int) {
         POPULAR(R.string.popular_movies),
         TOP_RATED(R.string.top_rated_movies),
         UP_COMING(R.string.up_coming_movies),

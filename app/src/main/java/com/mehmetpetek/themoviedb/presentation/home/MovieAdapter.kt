@@ -7,8 +7,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.mehmetpetek.themoviedb.BuildConfig
+import com.mehmetpetek.themoviedb.data.remote.model.MovieResponse
 import com.mehmetpetek.themoviedb.data.remote.model.Result
 import com.mehmetpetek.themoviedb.databinding.RvMovieBinding
+
+data class MovieAdapterModel(
+    val title: String,
+    val results: MovieResponse?
+)
 
 class MovieAdapter(
     private val onMovieListener: OnMovieListener

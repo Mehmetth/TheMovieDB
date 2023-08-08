@@ -8,9 +8,9 @@
         android:id="@+id/cl_top_area"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/nsv_movie_desc"
         app:layout_constraintHeight_percent="0.45"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/nsv_movie_desc">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/iv_movie_backdrop"
@@ -106,8 +106,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="21sp"/>
+            android:textSize="21sp"
+            android:textStyle="bold" />
 
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

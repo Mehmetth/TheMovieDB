@@ -56,7 +56,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                                     setRecyclerview(
                                         binding.tvPopularMoviesTitle,
                                         binding.rvPopularMovies,
-                                        AAAAA(getString(key.movieType), value)
+                                        MovieAdapterModel(getString(key.movieType), value)
                                     )
                                 }
 
@@ -64,7 +64,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                                     setRecyclerview(
                                         binding.tvTopRatedMoviesTitle,
                                         binding.rvTopRatedMovies,
-                                        AAAAA(getString(key.movieType), value)
+                                        MovieAdapterModel(getString(key.movieType), value)
                                     )
                                 }
 
@@ -72,7 +72,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                                     setRecyclerview(
                                         binding.tvUpComingMoviesTitle,
                                         binding.rvUpComingMovies,
-                                        AAAAA(getString(key.movieType), value)
+                                        MovieAdapterModel(getString(key.movieType), value)
                                     )
                                 }
 
@@ -80,7 +80,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                                     setRecyclerview(
                                         binding.tvNowPlayingMoviesTitle,
                                         binding.rvNowPlayingMovies,
-                                        AAAAA(getString(key.movieType), value)
+                                        MovieAdapterModel(getString(key.movieType), value)
                                     )
                                 }
                             }
@@ -94,30 +94,30 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private fun setRecyclerview(
         textView: TextView,
         recyclerView: RecyclerView,
-        aaaa: AAAAA
+        movieAdapterModel: MovieAdapterModel
     ) {
-        textView.text = aaaa.title
+        textView.text = movieAdapterModel.title
         recyclerView.setHasFixedSize(true)
         if (recyclerView.adapter == null) {
             val adapter = MovieAdapter(this).apply {
-                submitList(aaaa.results?.results)
+                submitList(movieAdapterModel.results?.results)
             }
             recyclerView.adapter = adapter
             recyclerView.addOnScrollListener(object :
                 PaginationScrollListener(recyclerView.layoutManager as LinearLayoutManager) {
                 override fun loadMoreItems() {
-                    viewModel.setEvent(HomeEvent.LoadMore(aaaa.title))
+                    viewModel.setEvent(HomeEvent.LoadMore(movieAdapterModel.title))
                 }
 
                 override fun isLastPage(): Boolean =
-                    (recyclerView.adapter as MovieAdapter).itemCount >= (aaaa.results?.total_pages
+                    (recyclerView.adapter as MovieAdapter).itemCount >= (movieAdapterModel.results?.total_pages
                         ?: 0)
 
                 override fun isLastedPage() {}
                 override fun isNotLastedPage() {}
             })
         } else {
-            (recyclerView.adapter as MovieAdapter).updateList(aaaa.results?.results as List<Result>)
+            (recyclerView.adapter as MovieAdapter).updateList(movieAdapterModel.results?.results as List<Result>)
         }
     }
 
