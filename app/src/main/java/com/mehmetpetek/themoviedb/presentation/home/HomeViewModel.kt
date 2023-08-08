@@ -4,11 +4,7 @@ import android.app.Application
 import androidx.lifecycle.viewModelScope
 import com.mehmetpetek.themoviedb.R
 import com.mehmetpetek.themoviedb.data.remote.model.MovieResponse
-import com.mehmetpetek.themoviedb.data.remote.model.Result
-import com.mehmetpetek.themoviedb.domain.usecase.NowPlayingMoviesUseCase
-import com.mehmetpetek.themoviedb.domain.usecase.PopularMoviesUseCase
-import com.mehmetpetek.themoviedb.domain.usecase.TopRatedMoviesUseCase
-import com.mehmetpetek.themoviedb.domain.usecase.UpcomingMoviesUseCase
+import com.mehmetpetek.themoviedb.domain.usecase.AllMoviesUseCase
 import com.mehmetpetek.themoviedb.presentation.base.BaseViewModel
 import com.mehmetpetek.themoviedb.presentation.base.IEffect
 import com.mehmetpetek.themoviedb.presentation.base.IEvent
@@ -17,21 +13,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private var popularMoviesUseCase: PopularMoviesUseCase,
-    private var topRatedMoviesUseCase: TopRatedMoviesUseCase,
-    private var upcomingMoviesUseCase: UpcomingMoviesUseCase,
-    private var nowPlayingMoviesUseCase: NowPlayingMoviesUseCase,
+    private val allMoviesUseCase: AllMoviesUseCase,
     private val application: Application
 ) : BaseViewModel<HomeEvent, HomeState, HomeEffect>() {
 
     init {
-        getPopularMovies(getCurrentState().popularMoviesPage)
-        topRatedMovies(getCurrentState().topRatedMoviesPage)
-        getUpcomingMovies(getCurrentState().upcomingMoviesPage)
-        getNowPlayingMovies(getCurrentState().nowPlayingMoviesPage)
+        allMovies(
+            getCurrentState().popularMoviesPage,
+            getCurrentState().topRatedMoviesPage,
+            getCurrentState().upcomingMoviesPage,
+            getCurrentState().nowPlayingMoviesPage
+        )
     }
 
     override fun setInitialState(): HomeState = HomeState(isLoading = false)
@@ -41,21 +35,27 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.LoadMore -> {
                 when (event.title) {
                     application.applicationContext.getString(R.string.popular_movies) -> {
-                        getPopularMovies(getCurrentState().popularMoviesPage + 1)
+                        setState { copy(popularMoviesPage = getCurrentState().popularMoviesPage + 1) }
                     }
 
                     application.applicationContext.getString(R.string.top_rated_movies) -> {
-                        topRatedMovies(getCurrentState().topRatedMoviesPage + 1)
+                        setState { copy(topRatedMoviesPage = getCurrentState().topRatedMoviesPage + 1) }
                     }
 
                     application.applicationContext.getString(R.string.up_coming_movies) -> {
-                        getUpcomingMovies(getCurrentState().upcomingMoviesPage + 1)
+                        setState { copy(upcomingMoviesPage = getCurrentState().upcomingMoviesPage + 1) }
                     }
 
                     application.applicationContext.getString(R.string.now_playing_movies) -> {
-                        getNowPlayingMovies(getCurrentState().nowPlayingMoviesPage + 1)
+                        setState { copy(nowPlayingMoviesPage = getCurrentState().nowPlayingMoviesPage + 1) }
                     }
                 }
+                allMovies(
+                    getCurrentState().popularMoviesPage,
+                    getCurrentState().topRatedMoviesPage,
+                    getCurrentState().upcomingMoviesPage,
+                    getCurrentState().nowPlayingMoviesPage
+                )
             }
 
             is HomeEvent.OnClickMovieDetail -> {
@@ -64,90 +64,29 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getPopularMovies(page: Int) {
-        setState { copy(isLoading = true, popularMoviesPage = page) }
-
+    private fun allMovies(
+        popularMoviesPage: Int,
+        topRatedMoviesPage: Int,
+        upcomingMoviesPage: Int,
+        nowPlayingMoviesPage: Int
+    ) {
         viewModelScope.launch {
-            popularMoviesUseCase.invoke(page).collect {
+            allMoviesUseCase.invoke(
+                popularMoviesPage,
+                topRatedMoviesPage,
+                upcomingMoviesPage,
+                nowPlayingMoviesPage
+            ).collect {
                 when (it) {
-                    is PopularMoviesUseCase.PopularMoviesState.Success -> {
-                        setState { HomeState(popularMovies = it.popularMovies) }
+                    is AllMoviesUseCase.AllMoviesState.Success -> {
+                        setState { copy(allMovies = it.allMovies) }
                     }
 
-                    is PopularMoviesUseCase.PopularMoviesState.NotData -> {
-                        setState { copy(isLoading = false, popularMovies = null) }
+                    is AllMoviesUseCase.AllMoviesState.NotData -> {
                     }
 
-                    is PopularMoviesUseCase.PopularMoviesState.Error -> {
-                        setState { copy(isLoading = false, popularMovies = null) }
-                        setEffect { HomeEffect.ShowError(it.throwable?.message.orEmpty()) }
-                    }
-                }
-            }
-        }
-    }
+                    is AllMoviesUseCase.AllMoviesState.Error -> {
 
-    private fun topRatedMovies(page: Int) {
-        setState { copy(isLoading = true, topRatedMoviesPage = page) }
-        setState { copy() }
-        viewModelScope.launch {
-            topRatedMoviesUseCase.invoke(page).collect {
-                when (it) {
-                    is TopRatedMoviesUseCase.TopRatedMoviesState.Success -> {
-                        setState { HomeState(topRatedMovies = it.topRatedMovies) }
-                    }
-
-                    is TopRatedMoviesUseCase.TopRatedMoviesState.NotData -> {
-                        setState { copy(isLoading = false, topRatedMovies = null) }
-                    }
-
-                    is TopRatedMoviesUseCase.TopRatedMoviesState.Error -> {
-                        setState { copy(isLoading = false, topRatedMovies = null) }
-                        setEffect { HomeEffect.ShowError(it.throwable?.message.orEmpty()) }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getUpcomingMovies(page: Int) {
-        setState { copy(isLoading = true, upcomingMoviesPage = page) }
-        viewModelScope.launch {
-            upcomingMoviesUseCase.invoke(page).collect {
-                when (it) {
-                    is UpcomingMoviesUseCase.UpcomingMoviesState.Success -> {
-                        setState { HomeState(upcomingMovies = it.upcomingMovies) }
-                    }
-
-                    is UpcomingMoviesUseCase.UpcomingMoviesState.NotData -> {
-                        setState { copy(isLoading = false, upcomingMovies = null) }
-                    }
-
-                    is UpcomingMoviesUseCase.UpcomingMoviesState.Error -> {
-                        setState { copy(isLoading = false, upcomingMovies = null) }
-                        setEffect { HomeEffect.ShowError(it.throwable?.message.orEmpty()) }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getNowPlayingMovies(page: Int) {
-        setState { copy(isLoading = true, nowPlayingMoviesPage = page) }
-        viewModelScope.launch {
-            nowPlayingMoviesUseCase.invoke(page).collect {
-                when (it) {
-                    is NowPlayingMoviesUseCase.NowPlayingMoviesState.Success -> {
-                        setState { HomeState(nowPlayingMovies = it.nowPlayingMovies) }
-                    }
-
-                    is NowPlayingMoviesUseCase.NowPlayingMoviesState.NotData -> {
-                        setState { copy(isLoading = false, nowPlayingMovies = null) }
-                    }
-
-                    is NowPlayingMoviesUseCase.NowPlayingMoviesState.Error -> {
-                        setState { copy(isLoading = false, nowPlayingMovies = null) }
-                        setEffect { HomeEffect.ShowError(it.throwable?.message.orEmpty()) }
                     }
                 }
             }
@@ -161,10 +100,7 @@ data class HomeState(
     val topRatedMoviesPage: Int = 1,
     val upcomingMoviesPage: Int = 1,
     val nowPlayingMoviesPage: Int = 1,
-    val popularMovies: MovieResponse? = null,
-    val topRatedMovies: MovieResponse? = null,
-    val upcomingMovies: MovieResponse? = null,
-    val nowPlayingMovies: MovieResponse? = null
+    val allMovies: HashMap<AllMoviesUseCase.MovieType, MovieResponse?> = hashMapOf(),
 ) : IState
 
 sealed interface HomeEffect : IEffect {

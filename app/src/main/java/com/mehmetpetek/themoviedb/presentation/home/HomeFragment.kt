@@ -1,6 +1,5 @@
 package com.mehmetpetek.themoviedb.presentation.home
 
-import android.util.Log
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -9,9 +8,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.mehmetpetek.themoviedb.R
 import com.mehmetpetek.themoviedb.data.remote.model.Result
 import com.mehmetpetek.themoviedb.databinding.FragmentHomeBinding
+import com.mehmetpetek.themoviedb.domain.usecase.AllMoviesUseCase
 import com.mehmetpetek.themoviedb.presentation.base.BaseFragment
 import com.mehmetpetek.themoviedb.presentation.common.PaginationScrollListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,6 +21,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     MovieAdapter.OnMovieListener {
 
     private val viewModel by viewModels<HomeViewModel>()
+    override val saveBinding: Boolean = true
 
     override fun bindScreen() {
         getEffect()
@@ -30,11 +30,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private fun getEffect() {
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.effect.collect {
                     when (it) {
                         is HomeEffect.ShowError -> {
                         }
+
                         is HomeEffect.GoToMovieDetail -> {
                             findNavController().navigate(HomeFragmentDirections.homeToDetail(it.movieId))
                         }
@@ -46,42 +47,43 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private fun getState() {
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect {
                     if (!it.isLoading) {
-                        Log.d("CCCCCCCCCCCCCC","popularMovies : " + it.popularMovies?.results?.size)
-                        Log.d("CCCCCCCCCCCCCC","topRatedMovies : " + it.topRatedMovies?.results?.size)
-                        Log.d("CCCCCCCCCCCCCC","upcomingMovies : " + it.upcomingMovies?.results?.size)
-                        Log.d("CCCCCCCCCCCCCC","nowPlayingMovies : " + it.nowPlayingMovies?.results?.size)
-                        Log.d("CCCCCCCCCCCCCC","+++++++++++++++++++++++++++++")
+                        it.allMovies.forEach { (key, value) ->
+                            when (key) {
+                                AllMoviesUseCase.MovieType.POPULAR -> {
+                                    setRecyclerview(
+                                        binding.tvPopularMoviesTitle,
+                                        binding.rvPopularMovies,
+                                        AAAAA(getString(key.movieType), value)
+                                    )
+                                }
 
-                        it.popularMovies?.let { popularMovies ->
-                            setRecyclerview(
-                                binding.tvPopularMoviesTitle,
-                                binding.rvPopularMovies,
-                                AAAAA(getString(R.string.popular_movies), popularMovies)
-                            )
-                        }
-                        it.topRatedMovies?.let { topRatedMovies ->
-                            setRecyclerview(
-                                binding.tvTopRatedMoviesTitle,
-                                binding.rvTopRatedMovies,
-                                AAAAA(getString(R.string.top_rated_movies), topRatedMovies)
-                            )
-                        }
-                        it.upcomingMovies?.let { upcomingMovies ->
-                            setRecyclerview(
-                                binding.tvUpComingMoviesTitle,
-                                binding.rvUpComingMovies,
-                                AAAAA(getString(R.string.up_coming_movies), upcomingMovies)
-                            )
-                        }
-                        it.nowPlayingMovies?.let { nowPlayingMovies ->
-                            setRecyclerview(
-                                binding.tvNowPlayingMoviesTitle,
-                                binding.rvNowPlayingMovies,
-                                AAAAA(getString(R.string.now_playing_movies), nowPlayingMovies)
-                            )
+                                AllMoviesUseCase.MovieType.TOP_RATED -> {
+                                    setRecyclerview(
+                                        binding.tvTopRatedMoviesTitle,
+                                        binding.rvTopRatedMovies,
+                                        AAAAA(getString(key.movieType), value)
+                                    )
+                                }
+
+                                AllMoviesUseCase.MovieType.UP_COMING -> {
+                                    setRecyclerview(
+                                        binding.tvUpComingMoviesTitle,
+                                        binding.rvUpComingMovies,
+                                        AAAAA(getString(key.movieType), value)
+                                    )
+                                }
+
+                                AllMoviesUseCase.MovieType.NOW_PLAYING -> {
+                                    setRecyclerview(
+                                        binding.tvNowPlayingMoviesTitle,
+                                        binding.rvNowPlayingMovies,
+                                        AAAAA(getString(key.movieType), value)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -115,11 +117,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 override fun isNotLastedPage() {}
             })
         } else {
-            val currentList =
-                (recyclerView.adapter as MovieAdapter).currentList.distinct()
-                    .toMutableList()
-            currentList.addAll(aaaa.results?.results as List<Result>)
-            (recyclerView.adapter as MovieAdapter).submitList(currentList)
+            (recyclerView.adapter as MovieAdapter).updateList(aaaa.results?.results as List<Result>)
         }
     }
 

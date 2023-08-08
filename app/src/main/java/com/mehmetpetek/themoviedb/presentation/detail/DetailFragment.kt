@@ -1,12 +1,10 @@
 package com.mehmetpetek.themoviedb.presentation.detail
 
-import android.util.Log
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import coil.load
-import coil.size.Scale
 import com.mehmetpetek.themoviedb.BuildConfig
 import com.mehmetpetek.themoviedb.R
 import com.mehmetpetek.themoviedb.databinding.FragmentDetailBinding

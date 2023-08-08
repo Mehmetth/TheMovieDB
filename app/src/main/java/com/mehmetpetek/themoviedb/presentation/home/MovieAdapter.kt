@@ -14,8 +14,10 @@ class MovieAdapter(
     private val onMovieListener: OnMovieListener
 ) : ListAdapter<Result, MovieAdapter.MovieViewHolder>(MovieDiffUtil()) {
 
+    private var items = mutableListOf<Result>()
+
     class MovieDiffUtil : DiffUtil.ItemCallback<Result>() {
-        override fun areItemsTheSame(oldItem: Result, newItem: Result) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: Result, newItem: Result) = oldItem.id == newItem.id
         override fun areContentsTheSame(oldItem: Result, newItem: Result) = oldItem == newItem
     }
 
@@ -35,6 +37,14 @@ class MovieAdapter(
         holder.bindData(currentList[position])
     }
 
+    fun updateList(updateList: List<Result>) {
+        if (currentList.takeLast(20) != updateList) {
+            items = ArrayList(currentList)
+            items.addAll(updateList)
+            submitList(items)
+        }
+    }
+
     class MovieViewHolder(
         private val binding: RvMovieBinding,
         private val onMovieListener: OnMovieListener
@@ -46,12 +56,12 @@ class MovieAdapter(
             binding.ivMovieImage.load("${BuildConfig.IMAGE_BASE_URL}${result.poster_path}")
 
             binding.root.setOnClickListener {
-                onMovieListener.onClickMovie(result)
+                onMovieListener.onClickMovie(result.id)
             }
         }
     }
 
     interface OnMovieListener {
-        fun onClickMovie(result: Result)
+        fun onClickMovie(movieId: Int)
     }
 }
