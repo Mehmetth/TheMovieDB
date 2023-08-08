@@ -8,4 +8,5 @@ class TheMovieDBDataSource @Inject constructor(private val theMovieDBService: Th
         theMovieDBService.getDiscoverMovies(page, sortBy)
 
     suspend fun getMovieDetail(movieId: Int) = theMovieDBService.getMovieDetail(movieId)
+    suspend fun getMovieImageDetail(movieId: Int) = theMovieDBService.getMovieImageDetail(movieId)
 }

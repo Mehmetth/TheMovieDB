@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.mehmetpetek.themoviedb.common.Constant
 import com.mehmetpetek.themoviedb.data.remote.model.MovieDetailResponse
+import com.mehmetpetek.themoviedb.data.remote.model.MovieImageResponse
 import com.mehmetpetek.themoviedb.domain.usecase.MovieDetailUseCase
 import com.mehmetpetek.themoviedb.presentation.base.BaseViewModel
 import com.mehmetpetek.themoviedb.presentation.base.IEffect
@@ -42,7 +43,8 @@ class DetailViewModel @Inject constructor(
                         setState {
                             copy(
                                 isLoading = false,
-                                movieDetailResponse = it.movieDetailResponse
+                                movieDetail = it.movieDetailResponse[MovieDetailUseCase.MovieDetailType.DETAIL] as MovieDetailResponse,
+                                movieImageDetail = it.movieDetailResponse[MovieDetailUseCase.MovieDetailType.IMAGE_DETAIL] as MovieImageResponse
                             )
                         }
                     }
@@ -50,10 +52,6 @@ class DetailViewModel @Inject constructor(
                     is MovieDetailUseCase.MovieDetailState.Error -> {
                         setState { copy(isLoading = false) }
                         setEffect { DetailEffect.ShowError(it.throwable?.message.orEmpty()) }
-                    }
-
-                    MovieDetailUseCase.MovieDetailState.NotData -> {
-                        setState { copy(isLoading = false, movieDetailResponse = null) }
                     }
                 }
             }
@@ -63,7 +61,8 @@ class DetailViewModel @Inject constructor(
 
 data class DetailState(
     val isLoading: Boolean = false,
-    val movieDetailResponse: MovieDetailResponse? = null
+    val movieDetail: MovieDetailResponse? = null,
+    val movieImageDetail: MovieImageResponse? = null
 ) : IState
 
 sealed interface DetailEffect : IEffect {

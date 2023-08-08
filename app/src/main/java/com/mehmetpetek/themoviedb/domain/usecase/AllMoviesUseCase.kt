@@ -104,7 +104,6 @@ class AllMoviesUseCase @Inject constructor(
         object NotData : AllMoviesState
     }
 
-
     enum class MovieType(val movieType: Int, val movieFilterDesc: String) {
         POPULARITY_DESC(R.string.popularity_movies, "popularity.desc"),
         REVENUE_DESC(R.string.revenue_movies, "revenue.desc"),

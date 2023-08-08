@@ -1,6 +1,7 @@
 package com.mehmetpetek.themoviedb.data.remote
 
 import com.mehmetpetek.themoviedb.data.remote.model.MovieDetailResponse
+import com.mehmetpetek.themoviedb.data.remote.model.MovieImageResponse
 import com.mehmetpetek.themoviedb.data.remote.model.MovieResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -18,4 +19,9 @@ interface TheMovieDBService {
     suspend fun getMovieDetail(
         @Path("movie_id") movieId: Int
     ): Response<MovieDetailResponse>
+
+    @GET("movie/{movie_id}/images")
+    suspend fun getMovieImageDetail(
+        @Path("movie_id") movieId: Int
+    ): Response<MovieImageResponse>
 }

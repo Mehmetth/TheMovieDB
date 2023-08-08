@@ -2,6 +2,7 @@ package com.mehmetpetek.themoviedb.data.repository
 
 import com.mehmetpetek.themoviedb.data.remote.TheMovieDBDataSource
 import com.mehmetpetek.themoviedb.data.remote.model.MovieDetailResponse
+import com.mehmetpetek.themoviedb.data.remote.model.MovieImageResponse
 import com.mehmetpetek.themoviedb.data.remote.model.MovieResponse
 import com.mehmetpetek.themoviedb.data.remote.model.Resource
 import com.mehmetpetek.themoviedb.domain.repository.TheMovieDBRepository
@@ -41,5 +42,20 @@ class TheMovieDBRepositoryImpl @Inject constructor(private val theMovieDBDataSou
         }
         awaitClose { cancel() }
     }
+
+    override fun getMovieImageDetail(movieId: Int): Flow<Resource<MovieImageResponse>> =
+        callbackFlow {
+            val response = theMovieDBDataSource.getMovieImageDetail(movieId)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    trySend(Resource.Success(it))
+                } ?: kotlin.run {
+                    trySend(Resource.Fail(null))
+                }
+            } else {
+                trySend(Resource.Error(null))
+            }
+            awaitClose { cancel() }
+        }
 
 }

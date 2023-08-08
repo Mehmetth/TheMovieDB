@@ -21,8 +21,6 @@ data class MovieDetailResponse(
     val production_companies: List<ProductionCompany>,
     val production_countries: List<ProductionCountry>,
     val release_date: String,
-    val revenue: Int,
-    val runtime: Int,
     val spoken_languages: List<SpokenLanguage>,
     val status: String,
     val tagline: String,

@@ -8,9 +8,9 @@
         android:id="@+id/cl_top_area"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/nsv_movie_desc"
-        app:layout_constraintHeight_percent="0.45"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toTopOf="@+id/sv_movie_desc"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="0.4">
 
         <ImageView
             android:id="@+id/iv_movie_backdrop"
@@ -93,21 +93,21 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nsv_movie_desc"
+    <ScrollView
+        android:id="@+id/sv_movie_desc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:layout_constraintHeight_percent="0.55"
-        app:layout_constraintTop_toBottomOf="@+id/cl_top_area">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cl_top_area"
+        app:layout_constraintVertical_weight="0.6">
 
         <TextView
             android:id="@+id/tv_movie_desc"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
             android:textColor="@color/black"
-            android:textSize="21sp"
-            android:textStyle="bold" />
-
-    </androidx.core.widget.NestedScrollView>
+            android:textSize="21sp" />
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
