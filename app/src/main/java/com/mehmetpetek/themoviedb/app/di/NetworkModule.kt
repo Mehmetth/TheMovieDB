@@ -3,12 +3,12 @@ package com.mehmetpetek.themoviedb.app.di
 import android.app.Application
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.mehmetpetek.themoviedb.BuildConfig
-import com.mehmetpetek.themoviedb.data.RequestInterceptor
 import com.mehmetpetek.themoviedb.data.remote.TheMovieDBService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -25,21 +25,25 @@ object NetworkModule {
         ChuckerInterceptor.Builder(application).build()
 
     @Provides
-    fun provideRequestInterceptor(): RequestInterceptor {
-        return RequestInterceptor()
-    }
-
-    @Provides
     @Singleton
     fun provideOkHttpClient(
-        chuckInterceptor: ChuckerInterceptor,
-        requestInterceptor: RequestInterceptor
+        chuckInterceptor: ChuckerInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder().apply {
             if (BuildConfig.DEBUG) {
                 addInterceptor(chuckInterceptor)
             }
-            addInterceptor(requestInterceptor)
+            addInterceptor(Interceptor { chain ->
+                chain.proceed(
+                    chain.request()
+                        .newBuilder()
+                        .addHeader(
+                            "Authorization",
+                            "Bearer ${BuildConfig.API_TOKEN}"
+                        )
+                        .build()
+                )
+            })
             readTimeout(60, TimeUnit.SECONDS)
             connectTimeout(60, TimeUnit.SECONDS)
             writeTimeout(60, TimeUnit.SECONDS)

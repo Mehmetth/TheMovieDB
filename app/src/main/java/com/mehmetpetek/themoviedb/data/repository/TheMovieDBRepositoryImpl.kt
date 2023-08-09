@@ -1,30 +1,56 @@
 package com.mehmetpetek.themoviedb.data.repository
 
+import com.mehmetpetek.themoviedb.data.mapper.toEntitiesMovie
+import com.mehmetpetek.themoviedb.data.mapper.toMovieEntities
 import com.mehmetpetek.themoviedb.data.remote.TheMovieDBDataSource
 import com.mehmetpetek.themoviedb.data.remote.model.MovieDetailResponse
 import com.mehmetpetek.themoviedb.data.remote.model.MovieImageResponse
 import com.mehmetpetek.themoviedb.data.remote.model.MovieResponse
 import com.mehmetpetek.themoviedb.data.remote.model.Resource
 import com.mehmetpetek.themoviedb.domain.repository.TheMovieDBRepository
+import com.mehmetpetek.themoviedb.domain.repository.TheMovieDBStorageRepository
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
-class TheMovieDBRepositoryImpl @Inject constructor(private val theMovieDBDataSource: TheMovieDBDataSource) :
+class TheMovieDBRepositoryImpl @Inject constructor(
+    private val theMovieDBDataSource: TheMovieDBDataSource,
+    private val theMovieDBStorageRepository: TheMovieDBStorageRepository
+) :
     TheMovieDBRepository {
     override fun getDiscoverMovies(page: Int, sortBy: String): Flow<Resource<MovieResponse>> =
         callbackFlow {
-            val response = theMovieDBDataSource.getDiscoverMovies(page, sortBy)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    trySend(Resource.Success(it))
-                } ?: kotlin.run {
-                    trySend(Resource.Fail(null))
+            theMovieDBStorageRepository.getMovies(page, sortBy).collect {
+                if (it.isNotEmpty()) {
+                    trySend(
+                        Resource.Success(
+                            MovieResponse(
+                                page = page,
+                                total_pages = 0,
+                                results = it.toMovieEntities()
+                            )
+                        )
+                    )
+                } else {
+                    val response = theMovieDBDataSource.getDiscoverMovies(page, sortBy)
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            theMovieDBStorageRepository.insertMovies(
+                                it.results.toEntitiesMovie(
+                                    page,
+                                    sortBy
+                                )
+                            )
+                            trySend(Resource.Success(it))
+                        } ?: kotlin.run {
+                            trySend(Resource.Fail(null))
+                        }
+                    } else {
+                        trySend(Resource.Error(null))
+                    }
                 }
-            } else {
-                trySend(Resource.Error(null))
             }
             awaitClose { cancel() }
         }
