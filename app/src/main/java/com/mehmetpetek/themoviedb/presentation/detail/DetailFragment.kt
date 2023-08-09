@@ -1,9 +1,6 @@
 package com.mehmetpetek.themoviedb.presentation.detail
 
-import android.content.pm.ActivityInfo
 import android.net.Uri
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +20,10 @@ import com.mehmetpetek.themoviedb.common.Constant.DrmMovie.DRM_LICENSE_URL
 import com.mehmetpetek.themoviedb.common.Constant.DrmMovie.DRM_SCHEME
 import com.mehmetpetek.themoviedb.common.Constant.DrmMovie.URL
 import com.mehmetpetek.themoviedb.common.Constant.DrmMovie.USER_AGENT
+import com.mehmetpetek.themoviedb.common.extensions.exitFullScreen
+import com.mehmetpetek.themoviedb.common.extensions.fullScreen
+import com.mehmetpetek.themoviedb.common.extensions.gone
+import com.mehmetpetek.themoviedb.common.extensions.visible
 import com.mehmetpetek.themoviedb.data.remote.model.MovieDetailResponse
 import com.mehmetpetek.themoviedb.data.remote.model.MovieImageResponse
 import com.mehmetpetek.themoviedb.databinding.FragmentDetailBinding
@@ -45,66 +46,40 @@ class DetailFragment : BaseFragment<FragmentDetailBinding>(FragmentDetailBinding
 
         initializePlayer()
         binding.ivPlayBtn.setOnClickListener {
-            it.visibility = View.GONE
-            binding.epPlayer.visibility = View.VISIBLE
-            binding.clMovieAttr.visibility = View.GONE
-            binding.epPlayer.player?.playWhenReady = true
-            binding.ivCloseBtn.visibility = View.VISIBLE
-            binding.ivFullScreenBtn.visibility = View.VISIBLE
-            binding.ivFullScreenBtn.load(R.drawable.ic_fullscreen)
+            it.gone()
+            binding.apply {
+                epPlayer.visible()
+                clMovieAttr.gone()
+                epPlayer.player?.playWhenReady = true
+                ivCloseBtn.visible()
+                ivFullScreenBtn.visible()
+                ivFullScreenBtn.load(R.drawable.ic_fullscreen)
+            }
         }
 
         binding.ivCloseBtn.setOnClickListener {
             releasePlayer()
-            it.visibility = View.GONE
-            binding.ivFullScreenBtn.visibility = View.GONE
-            binding.epPlayer.visibility = View.GONE
-            binding.clMovieAttr.visibility = View.VISIBLE
-            binding.ivPlayBtn.visibility = View.VISIBLE
+            it.gone()
+            binding.apply {
+                ivFullScreenBtn
+                ivFullScreenBtn.gone()
+                epPlayer.gone()
+                clMovieAttr.visible()
+                ivPlayBtn.visible()
+            }
             initializePlayer()
         }
 
         binding.ivFullScreenBtn.setOnClickListener {
             if (!fullScreenVideo) {
                 binding.ivFullScreenBtn.load(R.drawable.ic_fullscreen_exit)
-                fullScreen()
+                requireActivity().fullScreen(binding.clTopArea)
             } else {
                 binding.ivFullScreenBtn.load(R.drawable.ic_fullscreen)
-                exitFullScreen()
+                requireActivity().exitFullScreen(binding.clTopArea)
             }
             fullScreenVideo = !fullScreenVideo
         }
-    }
-
-    private fun fullScreen() {
-        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
-        if (requireActivity().actionBar != null) {
-            requireActivity().actionBar?.hide()
-        }
-        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
-        val params = binding.clTopArea.layoutParams
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT
-        binding.clTopArea.layoutParams = params
-    }
-
-    private fun exitFullScreen() {
-        requireActivity().window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-
-        if (requireActivity().actionBar != null) {
-            requireActivity().actionBar?.show()
-        }
-
-        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-
-        val params = binding.clTopArea.layoutParams
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT
-        params.height =
-            (350 * requireContext().resources.displayMetrics.density).toInt()
-        binding.clTopArea.layoutParams = params
     }
 
     private fun getEffect() {
