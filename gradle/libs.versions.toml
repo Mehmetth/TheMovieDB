@@ -16,6 +16,7 @@ coroutines = "1.6.4"
 chucker = "4.0.0"
 retrofit = "2.9.0"
 coil = "2.4.0"
+exoplayer = "2.18.7"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -35,6 +36,7 @@ retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", ver
 chucker = { group = "com.github.chuckerteam.chucker", name = "library", version.ref = "chucker" }
 chucker-no-op = { group = "com.github.chuckerteam.chucker", name = "library-no-op", version.ref = "chucker" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+exoplayer = { group = "com.google.android.exoplayer", name = "exoplayer", version.ref = "exoplayer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
