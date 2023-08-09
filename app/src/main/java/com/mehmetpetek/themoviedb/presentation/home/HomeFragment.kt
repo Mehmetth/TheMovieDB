@@ -49,6 +49,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect {
+                    setLoadingState(it.isLoading)
                     if (!it.isLoading) {
                         it.allMovies.forEach { (key, value) ->
                             when (key) {

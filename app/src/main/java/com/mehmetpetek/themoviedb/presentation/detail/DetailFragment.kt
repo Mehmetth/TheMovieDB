@@ -98,6 +98,7 @@ class DetailFragment : BaseFragment<FragmentDetailBinding>(FragmentDetailBinding
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.state.collect {
+                    setLoadingState(it.isLoading)
                     if (!it.isLoading) {
                         it.movieImageDetail?.let { movieImage ->
                             setImages(movieImage)

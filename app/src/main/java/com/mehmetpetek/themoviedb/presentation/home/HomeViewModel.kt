@@ -70,6 +70,7 @@ class HomeViewModel @Inject constructor(
         primaryReleaseDateMoviesPage: Int,
         voteAverageMoviesPage: Int
     ) {
+        setState { copy(isLoading = true) }
         viewModelScope.launch {
             allMoviesUseCase.invoke(
                 popularityMoviesPage,
@@ -79,14 +80,16 @@ class HomeViewModel @Inject constructor(
             ).collect {
                 when (it) {
                     is AllMoviesUseCase.AllMoviesState.Success -> {
-                        setState { copy(allMovies = it.allMovies) }
+                        setState { copy(isLoading = false, allMovies = it.allMovies) }
                     }
 
                     is AllMoviesUseCase.AllMoviesState.NotData -> {
+                        setState { copy(isLoading = false, allMovies = hashMapOf()) }
                     }
 
                     is AllMoviesUseCase.AllMoviesState.Error -> {
-
+                        setState { copy(isLoading = false, allMovies = hashMapOf()) }
+                        setEffect { HomeEffect.ShowError(it.throwable?.message.orEmpty()) }
                     }
                 }
             }
