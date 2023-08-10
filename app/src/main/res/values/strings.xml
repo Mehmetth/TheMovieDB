@@ -5,4 +5,11 @@
     <string name="revenue_movies">Revenue Movies</string>
     <string name="primary_release_date_movies">Primary Release Date Movies</string>
     <string name="vote_average_movies">Vote Average Movies</string>
+
+    <string name="error">Error</string>
+    <string name="ok">OK</string>
+    <string name="no_internet">No Internet</string>
+    <string name="general_error">General Error Occurred</string>
+    <string name="try_exception_mesage">Trying to call an auto-cleared value outside of the view lifecycle.</string>
+
 </resources>

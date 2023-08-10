@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.TheMovieDB" parent="Base.Theme.TheMovieDB" />
+
+    <style name="BaseDialogStyle" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
 </resources>

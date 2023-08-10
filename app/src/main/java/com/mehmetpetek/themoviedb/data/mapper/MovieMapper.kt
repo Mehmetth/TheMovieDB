@@ -16,7 +16,7 @@ fun List<MovieEntity>.toMovieEntities(): List<Result> {
     }
 }
 
-fun List<Result>.toEntitiesMovie(page: Int, sortBy: String,totalPage: Int): List<MovieEntity> {
+fun List<Result>.toEntitiesMovie(page: Int, sortBy: String, totalPage: Int): List<MovieEntity> {
     return map {
         MovieEntity(
             id = it.id,

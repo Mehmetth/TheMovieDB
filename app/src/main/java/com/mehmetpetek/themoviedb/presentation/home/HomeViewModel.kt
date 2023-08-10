@@ -89,7 +89,7 @@ class HomeViewModel @Inject constructor(
 
                     is AllMoviesUseCase.AllMoviesState.Error -> {
                         setState { copy(isLoading = false, allMovies = hashMapOf()) }
-                        setEffect { HomeEffect.ShowError(it.throwable?.message.orEmpty()) }
+                        setEffect { HomeEffect.ShowError(it.throwable) }
                     }
                 }
             }
@@ -107,7 +107,7 @@ data class HomeState(
 ) : IState
 
 sealed interface HomeEffect : IEffect {
-    data class ShowError(val message: String) : HomeEffect
+    data class ShowError(val throwable: Throwable?) : HomeEffect
     data class GoToMovieDetail(val movieId: Int) : HomeEffect
 }
 

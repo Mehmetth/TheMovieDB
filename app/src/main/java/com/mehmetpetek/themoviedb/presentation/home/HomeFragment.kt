@@ -34,6 +34,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 viewModel.effect.collect {
                     when (it) {
                         is HomeEffect.ShowError -> {
+                            handleError(it.throwable)
                         }
 
                         is HomeEffect.GoToMovieDetail -> {

@@ -51,7 +51,7 @@ class DetailViewModel @Inject constructor(
 
                     is MovieDetailUseCase.MovieDetailState.Error -> {
                         setState { copy(isLoading = false) }
-                        setEffect { DetailEffect.ShowError(it.throwable?.message.orEmpty()) }
+                        setEffect { DetailEffect.ShowError(it.throwable) }
                     }
                 }
             }
@@ -66,7 +66,7 @@ data class DetailState(
 ) : IState
 
 sealed interface DetailEffect : IEffect {
-    data class ShowError(val message: String) : DetailEffect
+    data class ShowError(val throwable: Throwable?) : DetailEffect
 }
 
 sealed interface DetailEvent : IEvent

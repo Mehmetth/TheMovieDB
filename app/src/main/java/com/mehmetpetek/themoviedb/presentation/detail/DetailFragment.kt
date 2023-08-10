@@ -87,7 +87,9 @@ class DetailFragment : BaseFragment<FragmentDetailBinding>(FragmentDetailBinding
             lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.effect.collect {
                     when (it) {
-                        else -> {}
+                        is DetailEffect.ShowError -> {
+                            handleError(it.throwable)
+                        }
                     }
                 }
             }

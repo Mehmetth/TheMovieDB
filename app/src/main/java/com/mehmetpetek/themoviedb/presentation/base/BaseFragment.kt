@@ -10,7 +10,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.mehmetpetek.themoviedb.R
 import com.mehmetpetek.themoviedb.common.extensions.gone
+import com.mehmetpetek.themoviedb.common.extensions.showFullPagePopup
 import com.mehmetpetek.themoviedb.common.extensions.visible
+import java.net.ConnectException
+import java.net.UnknownHostException
 
 abstract class BaseFragment<T : ViewBinding>(
     private val inflate: Inflate<T>,
@@ -69,4 +72,29 @@ abstract class BaseFragment<T : ViewBinding>(
         progress = null
     }
 
+    fun handleError(throwable: Throwable?, primaryListener: (() -> Unit)? = null) {
+        when (throwable) {
+            is ConnectException,
+            is UnknownHostException,
+            -> {
+                showFullPagePopup(
+                    R.drawable.ic_info,
+                    title = getString(R.string.error),
+                    desc = getString(R.string.no_internet),
+                    buttonPrimary = getString(R.string.ok),
+                    primaryListener = primaryListener
+                )
+            }
+
+            else -> {
+                showFullPagePopup(
+                    R.drawable.ic_info,
+                    title = getString(R.string.general_error),
+                    desc = throwable?.localizedMessage,
+                    buttonPrimary = getString(R.string.ok),
+                    primaryListener = primaryListener
+                )
+            }
+        }
+    }
 }
