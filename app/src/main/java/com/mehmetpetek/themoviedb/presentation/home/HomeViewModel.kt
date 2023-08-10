@@ -91,7 +91,7 @@ class HomeViewModel @Inject constructor(
 
                     is AllMoviesUseCase.AllMoviesState.Error -> {
                         setState { copy(isLoading = false, allMovies = hashMapOf()) }
-                        setEffect { HomeEffect.ShowError(UnknownHostException()) }
+                        setEffect { HomeEffect.ShowError(it.throwable) }
                     }
                 }
             }

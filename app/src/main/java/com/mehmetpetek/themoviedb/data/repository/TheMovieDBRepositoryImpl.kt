@@ -13,6 +13,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class TheMovieDBRepositoryImpl @Inject constructor(
@@ -54,7 +55,7 @@ class TheMovieDBRepositoryImpl @Inject constructor(
                             trySend(Resource.Error(null))
                         }
                     } catch (ex: Exception) {
-                        trySend(Resource.Error(Throwable(message = ex.message)))
+                        trySend(Resource.Error(UnknownHostException()))
                     }
                 }
             }
@@ -62,22 +63,8 @@ class TheMovieDBRepositoryImpl @Inject constructor(
         }
 
     override fun getMovieDetail(movieId: Int): Flow<Resource<MovieDetailResponse>> = callbackFlow {
-        val response = theMovieDBDataSource.getMovieDetail(movieId)
-        if (response.isSuccessful) {
-            response.body()?.let {
-                trySend(Resource.Success(it))
-            } ?: kotlin.run {
-                trySend(Resource.Fail(null))
-            }
-        } else {
-            trySend(Resource.Error(null))
-        }
-        awaitClose { cancel() }
-    }
-
-    override fun getMovieImageDetail(movieId: Int): Flow<Resource<MovieImageResponse>> =
-        callbackFlow {
-            val response = theMovieDBDataSource.getMovieImageDetail(movieId)
+        try {
+            val response = theMovieDBDataSource.getMovieDetail(movieId)
             if (response.isSuccessful) {
                 response.body()?.let {
                     trySend(Resource.Success(it))
@@ -86,6 +73,30 @@ class TheMovieDBRepositoryImpl @Inject constructor(
                 }
             } else {
                 trySend(Resource.Error(null))
+            }
+        }
+        catch (ex: Exception){
+            trySend(Resource.Error(UnknownHostException()))
+        }
+        awaitClose { cancel() }
+    }
+
+    override fun getMovieImageDetail(movieId: Int): Flow<Resource<MovieImageResponse>> =
+        callbackFlow {
+            try {
+                val response = theMovieDBDataSource.getMovieImageDetail(movieId)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        trySend(Resource.Success(it))
+                    } ?: kotlin.run {
+                        trySend(Resource.Fail(null))
+                    }
+                } else {
+                    trySend(Resource.Error(null))
+                }
+            }
+            catch (ex: Exception){
+                trySend(Resource.Error(UnknownHostException()))
             }
             awaitClose { cancel() }
         }
