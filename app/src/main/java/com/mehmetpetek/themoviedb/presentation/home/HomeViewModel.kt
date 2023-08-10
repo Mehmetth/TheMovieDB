@@ -1,6 +1,7 @@
 package com.mehmetpetek.themoviedb.presentation.home
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.mehmetpetek.themoviedb.R
 import com.mehmetpetek.themoviedb.data.remote.model.MovieResponse
@@ -11,6 +12,7 @@ import com.mehmetpetek.themoviedb.presentation.base.IEvent
 import com.mehmetpetek.themoviedb.presentation.base.IState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -89,7 +91,7 @@ class HomeViewModel @Inject constructor(
 
                     is AllMoviesUseCase.AllMoviesState.Error -> {
                         setState { copy(isLoading = false, allMovies = hashMapOf()) }
-                        setEffect { HomeEffect.ShowError(it.throwable) }
+                        setEffect { HomeEffect.ShowError(UnknownHostException()) }
                     }
                 }
             }

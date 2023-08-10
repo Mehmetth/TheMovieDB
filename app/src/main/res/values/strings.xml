@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">TheMovieDB</string>
-
     <string name="popularity_movies">Popularity Movies</string>
     <string name="revenue_movies">Revenue Movies</string>
     <string name="primary_release_date_movies">Primary Release Date Movies</string>
@@ -12,4 +10,5 @@
     <string name="general_error">General Error Occurred</string>
     <string name="try_exception_mesage">Trying to call an auto-cleared value outside of the view lifecycle.</string>
 
+    <string name="home_no_internet_message">You do not have any cached data. Please continue using your internet.</string>
 </resources>

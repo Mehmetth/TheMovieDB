@@ -10,7 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mehmetpetek.themoviedb.common.Constant
+import com.mehmetpetek.themoviedb.common.extensions.gone
 import com.mehmetpetek.themoviedb.common.extensions.isTablet
+import com.mehmetpetek.themoviedb.common.extensions.visible
 import com.mehmetpetek.themoviedb.common.extensions.visibleIf
 import com.mehmetpetek.themoviedb.data.remote.model.Result
 import com.mehmetpetek.themoviedb.databinding.FragmentHomeBinding
@@ -61,44 +63,49 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 viewModel.state.collect {
                     setLoadingState(it.isLoading)
                     if (!it.isLoading) {
-                        it.allMovies.forEach { (key, value) ->
-                            when (key) {
-                                AllMoviesUseCase.MovieType.POPULARITY_DESC -> {
-                                    if (!firstMovieInitialize) {
-                                        firstMovieInitialize = true
-                                        initialDetailFragment(value?.results?.first()?.id ?: 0)
+                        if (it.allMovies.isNotEmpty()) {
+                            binding.clErrorArea.gone()
+                            it.allMovies.forEach { (key, value) ->
+                                when (key) {
+                                    AllMoviesUseCase.MovieType.POPULARITY_DESC -> {
+                                        if (!firstMovieInitialize) {
+                                            firstMovieInitialize = true
+                                            initialDetailFragment(value?.results?.first()?.id ?: 0)
+                                        }
+                                        setRecyclerview(
+                                            binding.tvPopularityMoviesTitle,
+                                            binding.rvPopularityMovies,
+                                            MovieAdapterModel(getString(key.movieType), value)
+                                        )
                                     }
-                                    setRecyclerview(
-                                        binding.tvPopularityMoviesTitle,
-                                        binding.rvPopularityMovies,
-                                        MovieAdapterModel(getString(key.movieType), value)
-                                    )
-                                }
 
-                                AllMoviesUseCase.MovieType.REVENUE_DESC -> {
-                                    setRecyclerview(
-                                        binding.tvRevenueMoviesTitle,
-                                        binding.rvRevenueMovies,
-                                        MovieAdapterModel(getString(key.movieType), value)
-                                    )
-                                }
+                                    AllMoviesUseCase.MovieType.REVENUE_DESC -> {
+                                        setRecyclerview(
+                                            binding.tvRevenueMoviesTitle,
+                                            binding.rvRevenueMovies,
+                                            MovieAdapterModel(getString(key.movieType), value)
+                                        )
+                                    }
 
-                                AllMoviesUseCase.MovieType.PRIMARY_RELEASE_DATE_DESC -> {
-                                    setRecyclerview(
-                                        binding.tvPrimaryReleaseDateMoviesTitle,
-                                        binding.rvPrimaryReleaseDateMovies,
-                                        MovieAdapterModel(getString(key.movieType), value)
-                                    )
-                                }
+                                    AllMoviesUseCase.MovieType.PRIMARY_RELEASE_DATE_DESC -> {
+                                        setRecyclerview(
+                                            binding.tvPrimaryReleaseDateMoviesTitle,
+                                            binding.rvPrimaryReleaseDateMovies,
+                                            MovieAdapterModel(getString(key.movieType), value)
+                                        )
+                                    }
 
-                                AllMoviesUseCase.MovieType.VOTE_AVERAGE_DESC -> {
-                                    setRecyclerview(
-                                        binding.tvVoteAverageTitle,
-                                        binding.rvVoteAverageMovies,
-                                        MovieAdapterModel(getString(key.movieType), value)
-                                    )
+                                    AllMoviesUseCase.MovieType.VOTE_AVERAGE_DESC -> {
+                                        setRecyclerview(
+                                            binding.tvVoteAverageTitle,
+                                            binding.rvVoteAverageMovies,
+                                            MovieAdapterModel(getString(key.movieType), value)
+                                        )
+                                    }
                                 }
                             }
+                        } else {
+                            binding.clErrorArea.visible()
                         }
                     }
                 }

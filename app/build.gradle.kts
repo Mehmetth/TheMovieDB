@@ -53,7 +53,7 @@ android {
             buildConfigField(
                 "String",
                 "API_TOKEN",
-                "\"eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkMzAwOTM0MDhlNDE0ZGI5ODJmNTJlMDU0ZjY2N2Q5NyIsInN1YiI6IjYwMzk1MmZiNmQ5N2U2MDA0NTE5ZTYwOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.d5C-08afDBaOLvQeVAnVu0YgtHvaC-S232PgAlrcxKE\""
+                "API_TOKEN_HERE"
             )
             buildConfigField("String", "IMAGE_BASE_URL", "\"https://image.tmdb.org/t/p/w500\"")
         }
@@ -65,7 +65,7 @@ android {
             buildConfigField(
                 "String",
                 "API_TOKEN",
-                "\"eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkMzAwOTM0MDhlNDE0ZGI5ODJmNTJlMDU0ZjY2N2Q5NyIsInN1YiI6IjYwMzk1MmZiNmQ5N2U2MDA0NTE5ZTYwOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.d5C-08afDBaOLvQeVAnVu0YgtHvaC-S232PgAlrcxKE\""
+                "API_TOKEN_HERE"
             )
             buildConfigField("String", "IMAGE_BASE_URL", "\"https://image.tmdb.org/t/p/w500\"")
         }

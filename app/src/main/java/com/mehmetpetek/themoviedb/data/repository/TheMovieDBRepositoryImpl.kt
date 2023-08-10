@@ -34,22 +34,27 @@ class TheMovieDBRepositoryImpl @Inject constructor(
                         )
                     )
                 } else {
-                    val response = theMovieDBDataSource.getDiscoverMovies(page, sortBy)
-                    if (response.isSuccessful) {
-                        response.body()?.let {
-                            theMovieDBStorageRepository.insertMovies(
-                                it.results.toEntitiesMovie(
-                                    page,
-                                    sortBy,
-                                    totalPage = it.total_pages
+                    try {
+                        val response = theMovieDBDataSource.getDiscoverMovies(page, sortBy)
+
+                        if (response.isSuccessful) {
+                            response.body()?.let {
+                                theMovieDBStorageRepository.insertMovies(
+                                    it.results.toEntitiesMovie(
+                                        page,
+                                        sortBy,
+                                        totalPage = it.total_pages
+                                    )
                                 )
-                            )
-                            trySend(Resource.Success(it))
-                        } ?: kotlin.run {
-                            trySend(Resource.Fail(null))
+                                trySend(Resource.Success(it))
+                            } ?: kotlin.run {
+                                trySend(Resource.Fail(null))
+                            }
+                        } else {
+                            trySend(Resource.Error(null))
                         }
-                    } else {
-                        trySend(Resource.Error(null))
+                    } catch (ex: Exception) {
+                        trySend(Resource.Error(Throwable(message = ex.message)))
                     }
                 }
             }

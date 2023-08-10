@@ -90,7 +90,7 @@ abstract class BaseFragment<T : ViewBinding>(
                 showFullPagePopup(
                     R.drawable.ic_info,
                     title = getString(R.string.general_error),
-                    desc = throwable?.localizedMessage,
+                    desc = throwable?.message,
                     buttonPrimary = getString(R.string.ok),
                     primaryListener = primaryListener
                 )
