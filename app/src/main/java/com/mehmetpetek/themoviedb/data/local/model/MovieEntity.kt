@@ -17,5 +17,6 @@ data class MovieEntity(
     val rating: Double,
     val releaseDate: String,
     val sortBy: String,
+    val totalPage: Int,
     var page: Int = 1
 ) : Parcelable

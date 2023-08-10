@@ -28,7 +28,7 @@ class TheMovieDBRepositoryImpl @Inject constructor(
                         Resource.Success(
                             MovieResponse(
                                 page = page,
-                                total_pages = 0,
+                                total_pages = it.first().totalPage,
                                 results = it.toMovieEntities()
                             )
                         )
@@ -40,7 +40,8 @@ class TheMovieDBRepositoryImpl @Inject constructor(
                             theMovieDBStorageRepository.insertMovies(
                                 it.results.toEntitiesMovie(
                                     page,
-                                    sortBy
+                                    sortBy,
+                                    totalPage = it.total_pages
                                 )
                             )
                             trySend(Resource.Success(it))
