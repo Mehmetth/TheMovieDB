@@ -36,10 +36,10 @@ TheMovieDB App is an application written by considering MVVM architecture, Jetpa
 - [Navigation Component](https://developer.android.com/guide/navigation) - Single activity multiple fragments approach
 - [Flow](https://developer.android.com/kotlin/flow/stateflow-and-sharedflow) - Notify domain layer data to views.
 - [Lifecycle](https://developer.android.com/topic/libraries/architecture/lifecycle) - Dispose of observing data when lifecycle state changes.
-- [Fragment-ktx](https://developer.android.com/kotlin/ktx#fragment) - A set of Kotlin extensions that helps with fragment lifecycle.
 - [View Binding](https://developer.android.com/topic/libraries/view-binding) - Allows you to more easily write code that interacts with views
 - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - UI related data holder, lifecycle aware.
 - [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) - Dependency injection library for Android
+- [Retrofit](https://square.github.io/retrofit/) - It is used for http requests in the app.
 - [Room DB](https://developer.android.com/training/data-storage/room) - The Room persistence library provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite
 - [ExoPlayer](https://exoplayer.dev/) - It is used to play the videos contained in the app.
 - [Coil](https://coil-kt.github.io/coil/) - It is used to upload images contained in the app.
