@@ -28,6 +28,9 @@ TheMovieDB App is an application written by considering MVVM architecture, Jetpa
   </tr>  
 </table>
 
+https://github.com/Mehmetth/TheMovieDB/assets/18207490/6e0f5712-231e-4e94-98cd-be8b279a38b3
+
+https://github.com/Mehmetth/TheMovieDB/assets/18207490/a70290d5-4609-41e6-8178-614aadab5a6c
 
 ## Tech stack & Open-source libraries
 - 100% [Kotlin](https://kotlinlang.org/) based + [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) and [Flow](https://developer.android.com/kotlin/flow)
