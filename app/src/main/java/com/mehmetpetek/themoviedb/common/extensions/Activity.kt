@@ -2,6 +2,7 @@ package com.mehmetpetek.themoviedb.common.extensions
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
@@ -40,4 +41,8 @@ fun Activity.exitFullScreen(view: View) {
     params.width = ViewGroup.LayoutParams.MATCH_PARENT
     params.height = calculateScreenHeightPercentage(40)
     view.layoutParams = params
+}
+
+fun Activity.isTablet(): Boolean {
+    return (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE
 }

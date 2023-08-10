@@ -34,7 +34,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun getMovieDetail(movieId: Int) {
+    fun getMovieDetail(movieId: Int) {
         setState { copy(isLoading = true) }
         viewModelScope.launch {
             movieDetailUseCase.invoke(movieId).collect {

@@ -16,6 +16,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.MimeTypes
 import com.mehmetpetek.themoviedb.BuildConfig
 import com.mehmetpetek.themoviedb.R
+import com.mehmetpetek.themoviedb.common.Constant
 import com.mehmetpetek.themoviedb.common.Constant.DrmMovie.DRM_LICENSE_URL
 import com.mehmetpetek.themoviedb.common.Constant.DrmMovie.DRM_SCHEME
 import com.mehmetpetek.themoviedb.common.Constant.DrmMovie.URL
@@ -45,41 +46,8 @@ class DetailFragment : BaseFragment<FragmentDetailBinding>(FragmentDetailBinding
         getState()
 
         initializePlayer()
-        binding.ivPlayBtn.setOnClickListener {
-            it.gone()
-            binding.apply {
-                epPlayer.visible()
-                clMovieAttr.gone()
-                epPlayer.player?.playWhenReady = true
-                ivCloseBtn.visible()
-                ivFullScreenBtn.visible()
-                ivFullScreenBtn.load(R.drawable.ic_fullscreen)
-            }
-        }
-
-        binding.ivCloseBtn.setOnClickListener {
-            releasePlayer()
-            it.gone()
-            binding.apply {
-                ivFullScreenBtn
-                ivFullScreenBtn.gone()
-                epPlayer.gone()
-                clMovieAttr.visible()
-                ivPlayBtn.visible()
-            }
-            initializePlayer()
-        }
-
-        binding.ivFullScreenBtn.setOnClickListener {
-            if (!fullScreenVideo) {
-                binding.ivFullScreenBtn.load(R.drawable.ic_fullscreen_exit)
-                requireActivity().fullScreen(binding.clTopArea)
-            } else {
-                binding.ivFullScreenBtn.load(R.drawable.ic_fullscreen)
-                requireActivity().exitFullScreen(binding.clTopArea)
-            }
-            fullScreenVideo = !fullScreenVideo
-        }
+        setUI()
+        setFragmentResultListener()
     }
 
     private fun getEffect() {
@@ -110,6 +78,44 @@ class DetailFragment : BaseFragment<FragmentDetailBinding>(FragmentDetailBinding
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun setUI() {
+        with(binding) {
+            ivPlayBtn.setOnClickListener {
+                it.gone()
+                epPlayer.visible()
+                clMovieAttr.gone()
+                epPlayer.player?.playWhenReady = true
+                ivCloseBtn.visible()
+                ivFullScreenBtn.visible()
+                ivFullScreenBtn.load(R.drawable.ic_fullscreen)
+            }
+
+            ivCloseBtn.setOnClickListener {
+                releasePlayer()
+                it.gone()
+                binding.apply {
+                    ivFullScreenBtn
+                    ivFullScreenBtn.gone()
+                    epPlayer.gone()
+                    clMovieAttr.visible()
+                    ivPlayBtn.visible()
+                }
+                initializePlayer()
+            }
+
+            ivFullScreenBtn.setOnClickListener {
+                if (!fullScreenVideo) {
+                    binding.ivFullScreenBtn.load(R.drawable.ic_fullscreen_exit)
+                    requireActivity().fullScreen(binding.clTopArea)
+                } else {
+                    binding.ivFullScreenBtn.load(R.drawable.ic_fullscreen)
+                    requireActivity().exitFullScreen(binding.clTopArea)
+                }
+                fullScreenVideo = !fullScreenVideo
             }
         }
     }
@@ -158,29 +164,42 @@ class DetailFragment : BaseFragment<FragmentDetailBinding>(FragmentDetailBinding
     }
 
     private fun setImages(movieImage: MovieImageResponse) {
-        if (movieImage.backdrops.isNotEmpty()) {
-            binding.ivMovieBackdrop.load("${BuildConfig.IMAGE_BASE_URL}${movieImage.backdrops.first().file_path}") {
-                error(R.drawable.ic_image)
-                placeholder(R.drawable.ic_image)
-                fallback(R.drawable.ic_image)
+        with(binding) {
+            if (movieImage.backdrops.isNotEmpty()) {
+                ivMovieBackdrop.load("${BuildConfig.IMAGE_BASE_URL}${movieImage.backdrops.first().file_path}") {
+                    error(R.drawable.ic_image)
+                    placeholder(R.drawable.ic_image)
+                    fallback(R.drawable.ic_image)
+                }
             }
-        }
-        if (movieImage.posters.isNotEmpty()) {
-            binding.ivMoviePoster.load("${BuildConfig.IMAGE_BASE_URL}${movieImage.posters.first().file_path}") {
-                error(R.drawable.ic_image)
-                placeholder(R.drawable.ic_image)
-                fallback(R.drawable.ic_image)
+            if (movieImage.posters.isNotEmpty()) {
+                ivMoviePoster.load("${BuildConfig.IMAGE_BASE_URL}${movieImage.posters.first().file_path}") {
+                    error(R.drawable.ic_image)
+                    placeholder(R.drawable.ic_image)
+                    fallback(R.drawable.ic_image)
+                }
             }
         }
     }
 
     private fun setDesc(movieDetail: MovieDetailResponse) {
-        binding.tvMovieTitle.text = movieDetail.title
-        binding.tvMovieStarCount.text = movieDetail.vote_average.toString()
-        binding.tvMovieDate.text = movieDetail.release_date
-        binding.tvMovieDesc.text = movieDetail.overview
+        with(binding) {
+            tvMovieTitle.text = movieDetail.title
+            tvMovieStarCount.text = movieDetail.vote_average.toString()
+            tvMovieDate.text = movieDetail.release_date
+            tvMovieDesc.text = movieDetail.overview
+        }
     }
 
+
+    private fun setFragmentResultListener() {
+        requireActivity().supportFragmentManager.setFragmentResultListener(
+            Constant.DetailDataListener.DETAIL_SCREEN,
+            this,
+        ) { _, bundle ->
+            viewModel.getMovieDetail(bundle.getInt(Constant.DetailDataListener.DETAIL_MOVIE_ID))
+        }
+    }
 
     override fun onPause() {
         super.onPause()

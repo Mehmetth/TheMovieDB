@@ -5,6 +5,11 @@ import com.google.android.exoplayer2.C
 object Constant {
     const val MOVIE_ID = "movieId"
 
+    object DetailDataListener {
+        const val DETAIL_SCREEN = "detailScreen"
+        const val DETAIL_MOVIE_ID = "detailMovieId"
+    }
+
     object DrmMovie {
         const val URL = "https://storage.googleapis.com/wvmedia/cenc/h264/tears/tears.mpd"
         const val DRM_LICENSE_URL =
